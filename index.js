@@ -1,4 +1,4 @@
-import hyperHTML from './node_modules/hyperhtml/esm.js';
+import hyperHTML from './hyperhtml/esm.js';
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const storage = {
