@@ -1,11 +1,12 @@
 import hyperHTML from './hyperhtml/esm.js';
+import './geo-tag/GeoTag.js';
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const storage = {
-	fileName : "/status.txt",
+	fileName : "/status_encrypt.txt",
 	options : {
-	  encrypt: false,
-	  decrypt: false
+	  encrypt: true,
+	  decrypt: true
 	}
 };
 
@@ -80,7 +81,7 @@ customElements.define('blockstack-profile', class extends HTMLElement{
 							?html`<div class="row">
 									<h1>${this.state.person.name()}</h1>
 								</div>
-								<img class="row" style="widht: 100%; height:10rem; min-height:10rem; border-radius: 5px; background-color: red" src="${this.state.person.avatarUrl()}" />
+								<img class="row" style="width: 100%; height:10rem; min-height:10rem; border-radius: 5px;" src="${this.state.person.avatarUrl()}" />
 								<form action="javascript:void(0)" onsubmit=${this.onStatusSubmit.bind(this)}>
 									<fieldset class="row">
 									    <legend>Status</legend>
@@ -91,7 +92,7 @@ customElements.define('blockstack-profile', class extends HTMLElement{
 										<button type="button" onclick="${this.onSignout}">Signout</button>
 									</div>
 								</form>
-
+								<geo-tag></geo-tag>
 								`
 							:html`<button onclick="${this.onSignin}">Signin</button>`}
 					</div>`}
