@@ -4,13 +4,19 @@
   "description": "myapp",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "blockstack": "^19.0.1",
     "express": "^4.16.4",
-    "hyperhtml": "^2.25.4"
+    "geolib": "^2.0.24",
+    "hyperhtml": "^2.25.4",
+    "webpack": "^4.30.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.0"
   }
 }
