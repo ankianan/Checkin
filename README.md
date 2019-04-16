@@ -4,6 +4,9 @@ Its a geo-tagging app, where one can checkin a message of being at certain locat
 
 One can also view his previous checkins and other's checkins shared publically.
 
+### Deployed at 
+https://gallant-murdock-77cfc4.netlify.com/
+
 ### App features
 * Make checkin
 * View your checkins
