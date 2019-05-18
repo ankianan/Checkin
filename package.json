@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "start": "webpack"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "express": "^4.16.4",
     "geolib": "^2.0.24",
     "hyperhtml": "^2.25.4",
+    "radiks": "^0.2.0",
     "webpack": "^4.30.0"
   },
   "devDependencies": {

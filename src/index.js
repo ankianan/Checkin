@@ -1,9 +1,20 @@
-import * as blockstack from 'blockstack';
+import { UserSession, AppConfig, Person } from 'blockstack';
 import hyperHTML from 'hyperhtml';
 import './geo-tag/GeoTag.js';
 import './app-header/AppHeader.js';
-const html = (...args)=>hyperHTML.wire()(...args);
+import { User, configure } from 'radiks';
 
+
+const userSession = new UserSession({
+  appConfig: new AppConfig(['store_write', 'publish_data'])
+})
+
+configure({
+  apiServer: 'http://localhost:8081',
+  userSession
+});
+
+const html = (...args)=>hyperHTML.wire()(...args);
 const globalStyle = html`
 			<style>
 				.notifySignin .signin{
@@ -57,37 +68,42 @@ const signOutbuttonStyle = {
 }
 
 
-customElements.define('blockstack-profile', class extends HTMLElement{
+customElements.define('checkin-app', class extends HTMLElement{
 	constructor(){
 		super();
 		this.state = {};
-		
-		this.setInitialState();
 
+		this.setInitialState();
+		this.handleSignin();
+		this.onSignout = this.onSignout.bind(this);
+	}
+	async setInitialState(){
+		this.setState({
+			"isUserSignedIn" : false,
+			"person" : null,
+			loading : true
+		});
+	}
+	async handleSignin(){
 		try{
-			if (blockstack.isUserSignedIn()) {
-				this.setProfile(blockstack.loadUserData().profile);
-			} else if (blockstack.isSignInPending()) {
-				blockstack.handlePendingSignIn().then((userData)=>{
-					this.setProfile(userData.profile)
-				})
+			if (userSession.isUserSignedIn()) {
+				this.setProfile(userSession.loadUserData().profile);
+			} else if (userSession.isSignInPending()) {
+				const userData = await userSession.handlePendingSignIn();
+				this.setProfile(userData.profile);
+				await User.createWithCurrentUser();
+
 			}else{
 				this.setState({
 					loading : false
 				})
 			}
 		}catch(e){
+			console.error(e);
 			this.setState({
 				loading : false
 			})	
 		}
-	}
-	setInitialState(){
-		this.setState({
-			"isUserSignedIn" : false,
-			"person" : null,
-			loading : true
-		});
 	}
 	setState(newState){
 		Object.assign(this.state, newState);
@@ -95,16 +111,17 @@ customElements.define('blockstack-profile', class extends HTMLElement{
 	}
 	onSignin(event){
 		event.preventDefault()
-    	blockstack.redirectToSignIn();
+    	userSession.redirectToSignIn();
 	}
 	onSignout(event){
 		event.preventDefault()
-    	blockstack.signUserOut(document.location.origin)
+    	userSession.signUserOut();
+    	document.location.href = "/";
 	}
 	async setProfile(profile){
 		this.setState({
 			isUserSignedIn : true,
-			person : new blockstack.Person(profile),
+			person : new Person(profile),
 			loading : false 
 		});	
 	}
@@ -129,5 +146,5 @@ customElements.define('blockstack-profile', class extends HTMLElement{
 	}
 });
 
-hyperHTML.bind(document.body)`<blockstack-profile>`;
+hyperHTML.bind(document.body)`<checkin-app>`;
 

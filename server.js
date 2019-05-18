@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const { setup } = require('radiks-server');
 //const opn = require('opn')
 
 const app = express()
@@ -20,3 +21,20 @@ app.listen(port, (err) => {
   console.log(`server is listening on ${port}`)
   //opn(`http://localhost:${port}`)
 })
+
+
+setup().then((RadiksController) => {
+  console.log("radiks server middleware added", RadiksController);
+  app.use('/radiks', RadiksController);
+});
+
+/*const readCollection = async ()=>{
+	const { getDB } = require('radiks-server');
+	const mongo = await getDB('mongodb://127.0.0.1:27017/radiks-server');
+	let collections = await mongo.collections();
+	collections.forEach(collection=>{
+		collection.find().forEach((doc)=>console.log(doc))
+	});
+}
+
+readCollection();*/

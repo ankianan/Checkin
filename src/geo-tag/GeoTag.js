@@ -1,5 +1,6 @@
 import * as blockstack from 'blockstack';
 import geolib from 'geolib';
+import GeoTagModel from "./model/GeoTagModel.js"
 
 import hyperHTML from 'hyperhtml';
 const html = (...args)=>hyperHTML.wire()(...args);
@@ -134,11 +135,14 @@ customElements.define('geo-tag', class extends HTMLElement{
 			let clone_newFence = JSON.parse(JSON.stringify(this.state.newFence));
 			this.fences.push(clone_newFence);
 
+			const geoTag = new GeoTagModel(this.getServerModel(this.state.newFence));
+			await geoTag.save()
 			
-			await blockstack.putFile(storage.fileName, JSON.stringify(this.fences), storage.options).then(() => {
-				event.target.reset();
-				this.showTagsForPosition(position);
-			})	
+			event.target.reset();
+			this.showTagsForPosition(position);
+			/*await blockstack.putFile(storage.fileName, JSON.stringify(this.fences), storage.options).then(() => {
+				
+			})*/	
 		}else{
 			document.body.classList.add('notifySignin');
 			setTimeout(()=>{
@@ -147,8 +151,11 @@ customElements.define('geo-tag', class extends HTMLElement{
 		}
 	}
 	async getFences(){
-		let fences = await blockstack.getFile(storage.fileName, storage.options) 
-		return fences?JSON.parse(fences) : this.fences;
+		/*let fences = await blockstack.getFile(storage.fileName, storage.options) */
+		const geoTags = await GeoTagModel.fetchOwnList();
+		/*return fences?JSON.parse(fences) : this.fences;*/
+		return geoTags.length?geoTags.map(serverModel=>this.getClientModel(serverModel)): this.fences;
+		
 	}
 	async getPosition(){
 		return new Promise((resolve, reject)=>{
@@ -227,5 +234,26 @@ customElements.define('geo-tag', class extends HTMLElement{
 					:''
 				}
 			</div>`;
+	}
+	getServerModel(clientModel){
+		const {lat, long, radius, tags} = clientModel;
+		return {
+			lat,
+			long,
+			radius,
+			"tag-message" : tags.messages[0],
+			"tag-message-decrypt" : tags.messages[0]
+		};
+	}
+	getClientModel(serverModel){
+		const {lat, long, radius} = serverModel.attrs;
+		return {
+			lat,
+			long,
+			radius,
+			"tags" : {
+				"messages" : [serverModel.attrs['tag-message']]
+			}
+		};
 	}
 });
