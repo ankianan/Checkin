@@ -73,6 +73,12 @@ customElements.define('geo-tag', class extends XHyperElement{
 		};
 		this.fences = [];
 	}
+	connectedCallback(){
+		this.render();
+		if(this.props.isSignedIn){
+			this.loadGeoTags();
+		}
+	}
 	async loadGeoTags(){
 		let positionPromise = await this.getPosition();
 		Promise.all([this.getFences(), positionPromise]).then((values)=>{
@@ -85,13 +91,8 @@ customElements.define('geo-tag', class extends XHyperElement{
 		});
 	}
 	componentDidUpdate(previousProps, previousState){
-		if(previousProps.isSignedIn != this.props.isSignedIn){
-			if(this.props.isSignedIn == true){
-				this.loadGeoTags();
-			}
-		}
 		if(previousProps.allCheckins != this.props.allCheckins){
-			if(this.props.allCheckins == true){
+			if(this.props.allCheckins){
 				this.showTagsForAllPositions();
 			}else{
 				this.showTagsForLastPositions();

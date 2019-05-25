@@ -75,8 +75,6 @@ customElements.define('blockstack-profile', class extends XHyperElement{
 		this.toggleAllCheckins = this.toggleAllCheckins.bind(this);
 	}
 	connectedCallback(){
-		this.render()
-		
 		try{
 			if (blockstack.isUserSignedIn()) {
 				this.setProfile(blockstack.loadUserData().profile);
