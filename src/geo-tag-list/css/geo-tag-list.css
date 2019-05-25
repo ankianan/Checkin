@@ -1,0 +1,19 @@
+.geoTagList {
+	margin: 0 auto 1rem;
+    width: 50%;
+    min-height : 5rem;
+
+    &__count {
+		font-weight: normal;
+		border-bottom : solid 1px #a2a2a2;
+		padding: 1rem 0;
+	}
+
+	&__item {
+		padding : 1rem;
+		background-color : white;
+		margin-bottom : 1rem;
+	}
+}
+
+

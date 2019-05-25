@@ -1,7 +1,11 @@
 import * as blockstack from 'blockstack';
 import hyperHTML from 'hyperhtml';
-import './geo-tag/GeoTag.js';
 import './app-header/AppHeader.js';
+import './geo-tag/GeoTag.js';
+import './geo-tag-list/GeoTagList.js';
+
+import css from "./css/styles.css";
+import XHyperElement from './common/XHyperElement.js';
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const globalStyle = html`
@@ -57,13 +61,22 @@ const signOutbuttonStyle = {
 }
 
 
-customElements.define('blockstack-profile', class extends HTMLElement{
+customElements.define('blockstack-profile', class extends XHyperElement{
 	constructor(){
 		super();
-		this.state = {};
+		this.state = {
+			"isUserSignedIn" : false,
+			"person" : null,
+			loading : true,
+			messages : [],
+			showAllCheckins: false
+		};
+		this.setMessages = this.setMessages.bind(this);
+		this.toggleAllCheckins = this.toggleAllCheckins.bind(this);
+	}
+	connectedCallback(){
+		this.render()
 		
-		this.setInitialState();
-
 		try{
 			if (blockstack.isUserSignedIn()) {
 				this.setProfile(blockstack.loadUserData().profile);
@@ -82,16 +95,10 @@ customElements.define('blockstack-profile', class extends HTMLElement{
 			})	
 		}
 	}
-	setInitialState(){
+	setMessages(messages){
 		this.setState({
-			"isUserSignedIn" : false,
-			"person" : null,
-			loading : true
+			messages
 		});
-	}
-	setState(newState){
-		Object.assign(this.state, newState);
-		this.render(hyperHTML.bind(this))
 	}
 	onSignin(event){
 		event.preventDefault()
@@ -108,12 +115,18 @@ customElements.define('blockstack-profile', class extends HTMLElement{
 			loading : false 
 		});	
 	}
-	render(bind){
-		bind`
+	toggleAllCheckins(){
+		this.setState({
+			showAllCheckins: !this.state.showAllCheckins
+		})
+	}
+	render(){
+		this.html`
 			${globalStyle}
 			<div style="padding: 0 1rem;">
-				<app-header style="margin-bottom : 2rem;" person=${this.state.person}></app-header>
-				<geo-tag style="margin-bottom: 3rem" isSignedIn="${!!this.state.person}"></geo-tag>
+				<app-header style="margin-bottom : 2rem;" person=${this.state.person} allCheckins="${this.state.showAllCheckins}" toggleAllCheckins="${this.toggleAllCheckins}"></app-header>
+				<geo-tag style="margin-bottom: 3rem" isSignedIn="${!!this.state.person}" setMessages="${this.setMessages}" allCheckins="${this.state.showAllCheckins}"></geo-tag>
+				${this.state.isUserSignedIn?html`<geo-tag-list loading="${this.state.loading}" messages="${this.state.messages}"></geo-tag-list>`:''}
 				<div style="text-align:center;">
 				${this.state.loading
 					?html`<button style="${buttonStyle}">Loading...</button>`

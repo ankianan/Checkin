@@ -1,0 +1,13 @@
+app-header{
+	.app-header__container{
+		display : flex;
+		align-items: center;
+		border-bottom : solid 1px #a2a2a2;
+	}
+	.avatar{
+		width: 2rem;
+		height: 2rem;
+		min-height: 2rem;
+		border-radius: 50%;
+	}
+}
