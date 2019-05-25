@@ -1,6 +1,6 @@
 import * as blockstack from 'blockstack';
 import geolib from 'geolib';
-
+import XHyperElement from '../common/XHyperElement.js';
 import hyperHTML from 'hyperhtml';
 const html = (...args)=>hyperHTML.wire()(...args);
 
@@ -30,11 +30,6 @@ const formStyle = {
     width: "50%"
 }
 
-const tagListStyle={
-	margin: "0 auto 1rem",
-    width: "50%",
-    minHeight : "5rem"
-}
 
 const inputTextStyle = {
 	flex : "1",
@@ -54,53 +49,15 @@ const inputSubmitStyle = {
   outline : "none"
 }
 
-const tagResultCountStyle = {
-	fontWeight: "normal",
-    borderBottom : "solid 1px #a2a2a2",
-    padding: "1rem 0"
-}
 
-const tagItemStyle = {
-	padding : "1rem",
-	backgroundColor : "white",
-	marginBottom : "1rem"
-}
-
-customElements.define('geo-tag', class extends HTMLElement{
+customElements.define('geo-tag', class extends XHyperElement{
 	constructor(){
-		super();
-		this.state = {};
-		
-		this.setInitialState();
-
-		this.fences = [];
-
-		
-	}
-	get html() { 
-		return this._html || (this._html = hyperHTML.bind(this)); 
-	}
-	set isSignedIn(value){
-		this._isSignedIn = value;
-		let positionPromise = this.getPosition();
-
-		if(value == true){
-			Promise.all([this.getFences(), positionPromise]).then((values)=>{
-				this.fences = values[0];
-				const position = values[1];
-				this.setState({
-					loading : false
-				})
-				this.showTagsForPosition(position);
-			});
-		}
-		this.render();
-	}
-	get isSignedIn(){
-		return this._isSignedIn;
-	}
-	setInitialState(){
-		this.setState({
+		super({
+			isSignedIn : Boolean,
+			setMessages : Function,
+			allCheckins : Boolean
+		});
+		this.state = {
 			"newFence" : {
 				"lat" : 0,
 				"long" : 0,
@@ -113,11 +70,36 @@ customElements.define('geo-tag', class extends HTMLElement{
 				"messages" : []
 			},
 			"loading" : true
+		};
+		this.fences = [];
+	}
+	async loadGeoTags(){
+		let positionPromise = await this.getPosition();
+		Promise.all([this.getFences(), positionPromise]).then((values)=>{
+			this.fences = values[0];
+			const position = values[1];
+			this.setState({
+				loading : false
+			})
+			this.showTagsForPosition(position);
 		});
 	}
-	setState(newState){
-		Object.assign(this.state, newState);
-		this.render()
+	componentDidUpdate(previousProps, previousState){
+		if(previousProps.isSignedIn != this.props.isSignedIn){
+			if(this.props.isSignedIn == true){
+				this.loadGeoTags();
+			}
+		}
+		if(previousProps.allCheckins != this.props.allCheckins){
+			if(this.props.allCheckins == true){
+				this.showTagsForAllPositions();
+			}else{
+				this.showTagsForLastPositions();
+			}
+		}
+		if(this.state.tagged && this.state.tagged.messages != previousState.tagged.messages){
+			this.props.setMessages(this.state.tagged.messages);
+		}
 	}
 	onMessageInputChange(event){
 		this.setState({
@@ -129,7 +111,7 @@ customElements.define('geo-tag', class extends HTMLElement{
 		});
 	}
 	async createFence(event){
-		if(this.isSignedIn){
+		if(this.props.isSignedIn){
 			let position = await this.getPosition()
 			let clone_newFence = JSON.parse(JSON.stringify(this.state.newFence));
 			this.fences.push(clone_newFence);
@@ -171,24 +153,42 @@ customElements.define('geo-tag', class extends HTMLElement{
 		})
 		
 	}
-	showTagsForPosition(position){
+	showTagsForAllPositions(){
+		let messages = [];
+
+		//Iterate all fences
+		this.fences.forEach((fence)=>{
+			//Display messages of fence, in which user is standing
+			Array.prototype.push.apply(messages, fence.tags.messages)	
+		});
+
 		this.setState({
 			tagged : {
-				messages : []
+				messages
 			}
-		})
+		});
+	}
+	showTagsForPosition(position){
+		let messages = [];
+
 		//Iterate all fences
 		this.fences.forEach((fence)=>{
 			//Check if position in this fence
 			if(this.isPositionInFence(position, fence)){
 				//Display messages of fence, in which user is standing
-				this.setState({
-					tagged : Object.assign(this.state.tagged,{
-						messages:this.state.tagged.messages.concat(fence.tags.messages)
-					})
-				});
+				Array.prototype.push.apply(messages, fence.tags.messages)
 			}	
 		});
+
+		this.setState({
+			tagged : {
+				messages
+			}
+		});
+	}
+	showTagsForLastPositions(){
+		const {lat, long} = this.state.newFence;
+		this.showTagsForPosition({lat, long});
 	}
 	isPositionInFence(postion, fence){
 		const distance = geolib.getDistance(
@@ -208,24 +208,11 @@ customElements.define('geo-tag', class extends HTMLElement{
 				</div>
 				<div style="margin-bottom:1rem;text-align:center">
 					latitude : ${this.state.newFence.lat}, longitude : ${this.state.newFence.long}</div>
-				<form style="${formStyle}" action="javascript:void(0)" name="newFence" onsubmit="${this.createFence.bind(this)}" novalidate="${!this.isSignedIn}">
+				<form style="${formStyle}" action="javascript:void(0)" name="newFence" onsubmit="${this.createFence.bind(this)}" novalidate="${!this.props.isSignedIn}">
 						<input type="text" style="${inputTextStyle}" name="message" placeholder="Write a message" value="${this.state.newFence.tags.messages[0]}" onchange="${this.onMessageInputChange.bind(this)}" required />
 						<input type="submit" style="${inputSubmitStyle}" value="Post" />
 				</form>
-				${this.isSignedIn
-					?html`<div style="${tagListStyle}">
-							<h4 style="${tagResultCountStyle}">
-								${this.state.tagged.messages.length==0
-									?this.state.loading?'Loading...': 'No checkins done'
-									:`${('0'+this.state.tagged.messages.length).slice(-2)} checkins found`
-								}
-							</h4>
-							${this.state.tagged.messages.map((message)=>{
-								return html`<div style="${tagItemStyle}"><span>${message}</span></div>`;
-							})}
-						</div>`
-					:''
-				}
+				
 			</div>`;
 	}
 });
