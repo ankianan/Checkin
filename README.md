@@ -37,6 +37,6 @@ npm install
 
 npm run build
 
-## Run
+## Run file server
 
-http-server --cors //Assuming you have http-server as global dependency
+node server.js //localhost:8081
