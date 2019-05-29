@@ -1,6 +1,6 @@
 # Checkin
 
-Its a geo-tagging app, where one can checkin a message of being at certain location. The checkin will act as a memory for the user.
+Its a geo-tagging app, where one can checkin a message tagged to certain location. The checkin will act as a memory for the user.
 
 One can also view his previous checkins and other's checkins shared publically.
 
