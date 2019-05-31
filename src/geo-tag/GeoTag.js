@@ -88,16 +88,12 @@ customElements.define('geo-tag', class extends XHyperElement{
 			this.setState({
 				loading : false
 			})
-			this.showTagsForPosition(position);
+			this.showTags();
 		});
 	}
 	componentDidUpdate(previousProps, previousState){
 		if(previousProps.allCheckins != this.props.allCheckins){
-			if(this.props.allCheckins){
-				this.showTagsForAllPositions();
-			}else{
-				this.showTagsForLastPositions();
-			}
+			this.showTags();
 		}
 		if(this.state.tagged && this.state.tagged.messages != previousState.tagged.messages){
 			this.props.setMessages(this.state.tagged.messages);
@@ -155,6 +151,17 @@ customElements.define('geo-tag', class extends XHyperElement{
 			}
 		})
 		
+	}
+	/**
+	 * [showTags Should all or nearby checkins based on this.props.allCheckins]
+	 * @return {[type]} [description]
+	 */
+	showTags(){
+		if(this.props.allCheckins){
+			this.showTagsForAllPositions();
+		}else{
+			this.showTagsForLastPositions();
+		}
 	}
 	showTagsForAllPositions(){
 		let messages = [];
