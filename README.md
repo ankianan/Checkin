@@ -1,8 +1,8 @@
 # Checkin
 
-Its a geo-tagging app, where one can checkin a message of being at certain location. The checkin will act as a memory for the user.
+Its a geo-tagging app, where one can checkin a message tagged to certain location. The checkin will act as a memory for the user.
 
-One can also view his previous checkins and other's checkins shared publically.
+User can anytime see all his previous checkins or checkins done nearby.
 
 ### Deployed at 
 https://gallant-murdock-77cfc4.netlify.com/
@@ -37,6 +37,6 @@ npm install
 
 npm run build
 
-## Run
+## Run file server
 
-http-server --cors //Assuming you have http-server as global dependency
+node server.js //localhost:8081
