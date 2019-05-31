@@ -2,6 +2,7 @@ import * as blockstack from 'blockstack';
 import geolib from 'geolib';
 import XHyperElement from '../common/XHyperElement.js';
 import hyperHTML from 'hyperhtml';
+import page from 'page';
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const storage = {
@@ -73,14 +74,14 @@ customElements.define('geo-tag', class extends XHyperElement{
 		};
 		this.fences = [];
 	}
-	connectedCallback(){
+	async connectedCallback(){
 		this.render();
+		const positionPromise = await this.getPosition();
 		if(this.props.isSignedIn){
-			this.loadGeoTags();
+			this.loadGeoTags(positionPromise);
 		}
 	}
-	async loadGeoTags(){
-		let positionPromise = await this.getPosition();
+	loadGeoTags(positionPromise){
 		Promise.all([this.getFences(), positionPromise]).then((values)=>{
 			this.fences = values[0];
 			const position = values[1];
@@ -116,6 +117,7 @@ customElements.define('geo-tag', class extends XHyperElement{
 			let position = await this.getPosition()
 			let clone_newFence = JSON.parse(JSON.stringify(this.state.newFence));
 			this.fences.push(clone_newFence);
+			page('/nearby');
 
 			
 			await blockstack.putFile(storage.fileName, JSON.stringify(this.fences), storage.options).then(() => {

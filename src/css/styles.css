@@ -5,12 +5,17 @@
 }
 
 a{
+	font-size: inherit;
 	color: var(--link-color);
 	padding: .5rem;
 	border-radius: 5px;
 	&.selected{
 		color : var(--link-selected-color);	
 	}
+}
+
+.hide{
+	display: none;
 }
 
 body{

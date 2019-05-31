@@ -1,4 +1,6 @@
-const express = require('express')
+const express = require('express');
+const path = require('path');
+
 //const opn = require('opn')
 
 const app = express()
@@ -13,6 +15,9 @@ function allowCrossDomain(req, res, next) {
 
 app.use(allowCrossDomain)
 app.use('/', express.static(__dirname))
+app.get('/checkin*', function (request, response) {
+  response.sendFile(path.resolve(__dirname, 'index.html'));
+});
 app.listen(port, (err) => {
   if (err) {
     return console.log('something bad happened', err)

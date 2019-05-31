@@ -6,6 +6,7 @@ import './geo-tag-list/GeoTagList.js';
 
 import css from "./css/styles.css";
 import XHyperElement from './common/XHyperElement.js';
+import page from 'page';
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const globalStyle = html`
@@ -46,21 +47,6 @@ const buttonStyle = {
   outline : "none"
 }
 
-const signOutbuttonStyle = {
-  backgroundColor: "#e2e2e2",
-  border: "none",
-  color: "#333",
-  padding: "1rem",
-  textDecoration: "none",
-  cursor: "pointer",
-  width: "7rem",
-  outline : "none",
-  position : "fixed",
-  right : "1rem",
-  bottom : "1rem"
-}
-
-
 customElements.define('blockstack-profile', class extends XHyperElement{
 	constructor(){
 		super();
@@ -72,7 +58,9 @@ customElements.define('blockstack-profile', class extends XHyperElement{
 			showAllCheckins: false
 		};
 		this.setMessages = this.setMessages.bind(this);
-		this.toggleAllCheckins = this.toggleAllCheckins.bind(this);
+		this.showAllCheckins = this.showAllCheckins.bind(this);
+		this.showNearbyCheckins = this.showNearbyCheckins.bind(this);
+		this.setupRoutes();
 	}
 	connectedCallback(){
 		try{
@@ -92,6 +80,12 @@ customElements.define('blockstack-profile', class extends XHyperElement{
 				loading : false
 			})	
 		}
+	}
+	setupRoutes(){
+		page.base('/checkin');
+		page('/nearby', this.showNearbyCheckins);
+		page('/all', this.showAllCheckins);
+		page();
 	}
 	setMessages(messages){
 		this.setState({
@@ -113,25 +107,29 @@ customElements.define('blockstack-profile', class extends XHyperElement{
 			loading : false 
 		});	
 	}
-	toggleAllCheckins(){
+	showAllCheckins(){
 		this.setState({
-			showAllCheckins: !this.state.showAllCheckins
+			showAllCheckins : true
+		})
+	}
+	showNearbyCheckins(){
+		this.setState({
+			showAllCheckins : false
 		})
 	}
 	render(){
 		this.html`
 			${globalStyle}
 			<div style="padding: 0 1rem;">
-				<app-header style="margin-bottom : 2rem;" person=${this.state.person} allCheckins="${this.state.showAllCheckins}" toggleAllCheckins="${this.toggleAllCheckins}"></app-header>
+				<app-header style="margin-bottom : 2rem;" person=${this.state.person} allCheckins="${this.state.showAllCheckins}" signout="${this.onSignout}"></app-header>
 				<geo-tag style="margin-bottom: 3rem" isSignedIn="${!!this.state.person}" setMessages="${this.setMessages}" allCheckins="${this.state.showAllCheckins}"></geo-tag>
 				${this.state.isUserSignedIn?html`<geo-tag-list loading="${this.state.loading}" messages="${this.state.messages}"></geo-tag-list>`:''}
 				<div style="text-align:center;">
 				${this.state.loading
 					?html`<button style="${buttonStyle}">Loading...</button>`
 					:html`<div>
-							${this.state.isUserSignedIn
-								?html`<button style="${signOutbuttonStyle}" onclick="${this.onSignout}">Signout</button>`
-								:html`<button class="signin" style="${buttonStyle}" onclick="${this.onSignin}">Signin</button>`}
+							${!this.state.isUserSignedIn
+								?html`<button class="signin" style="${buttonStyle}" onclick="${this.onSignin}">Signin</button>`:''}
 						</div>`}
 				</div>
 				

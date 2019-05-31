@@ -1,13 +1,43 @@
 app-header{
-	.app-header__container{
+	.app-header__container, .app-header__mySection, .profile{
 		display : flex;
 		align-items: center;
+	}
+	.app-header__container{
 		border-bottom : solid 1px #a2a2a2;
 	}
-	.avatar{
-		width: 2rem;
-		height: 2rem;
-		min-height: 2rem;
-		border-radius: 50%;
+	.profile{	
+		position: relative;
+		&__image{
+			width: 2rem;
+			height: 2rem;
+			min-height: 2rem;
+			border-radius: 50%;
+		}
+		&__list{
+			display: none;
+			flex-direction: column;
+			background-color: white;
+			position: absolute;
+			right: 0;
+			min-width: 150px;
+			min-height: 100px;
+			box-shadow: 1px 1px 3px #888;
+			border-radius: 5px;
+			padding: .5rem 0;
+			top: 3rem;
+			&--item{
+				&:hover{
+					background-color: #f2f2f2;
+				}
+				padding: .5rem;
+				
+			}
+		}
+		&:hover{
+			.profile__list{
+				display : flex;
+			}
+		} 
 	}
 }

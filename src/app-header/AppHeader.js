@@ -9,7 +9,7 @@ customElements.define('app-header', class extends XHyperElement{
 		super({
 			person : Object,
 			allCheckins : Boolean,
-			toggleAllCheckins : Function
+			'signout' : Function
 		});
 	}
 	render(){
@@ -17,10 +17,21 @@ customElements.define('app-header', class extends XHyperElement{
 			<h1 style="flex : 1;">
 				<a style="text-decoration:none; color: inherit" href="/">Checkin</a>
 			</h1>
-			${this.props.person?html`<a class="${!this.props.allCheckins?'selected':''}" href="javascript:void(0)" onclick="${this.props.toggleAllCheckins}">Nearby</a>
-			<a class="${this.props.allCheckins?'selected':''}" href="javascript:void(0)" onclick="${this.props.toggleAllCheckins}">All</a>
-			<span style="margin : 1rem;">${this.props.person.name()}</span>
-			<img class="avatar"  src="${this.props.person.avatarUrl()}" />`:''}
+			<div class="${this.props.person?'app-header__mySection':'hide'}">
+				<a class="${!this.props.allCheckins?'selected':''}" href="./nearby">Nearby</a>
+				<a class="${this.props.allCheckins?'selected':''}" href="./all">All</a>
+				
+				<div class="profile">
+					<span style="margin : 1rem;">${this.props.person.name()}</span>
+					<img class="profile__image"  src="${this.props.person.avatarUrl()}" />
+					<div class="profile__list">
+						<div class="profile__list--item">
+							<a href="/" rel="external" onclick="${this.props['signout']}">Logout</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
 		</div>`
 	}
 });
