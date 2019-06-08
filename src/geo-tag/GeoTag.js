@@ -3,6 +3,8 @@ import geolib from 'geolib';
 import XHyperElement from '../common/XHyperElement.js';
 import hyperHTML from 'hyperhtml';
 import page from 'page';
+import {dispatch} from "../state/init.js";
+
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const storage = {
@@ -128,8 +130,13 @@ customElements.define('geo-tag', class extends XHyperElement{
 		}
 	}
 	async getFences(){
-		let fences = await blockstack.getFile(storage.fileName, storage.options) 
-		return fences?JSON.parse(fences) : this.fences;
+		let fences = await blockstack.getFile(storage.fileName, storage.options) ;
+		const payload = fences?JSON.parse(fences) : this.fences;
+		dispatch({
+			type : 'LOAD_TAGS',
+			tags: payload
+		})
+		return payload;
 	}
 	async getPosition(){
 		return new Promise((resolve, reject)=>{

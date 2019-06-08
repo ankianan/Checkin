@@ -7,6 +7,8 @@ import './geo-tag-list/GeoTagList.js';
 import css from "./css/styles.css";
 import XHyperElement from './common/XHyperElement.js';
 import page from 'page';
+import store from './state/init.js';
+
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const globalStyle = html`

@@ -15,6 +15,7 @@
     "geolib": "^2.0.24",
     "hyperhtml": "^2.25.4",
     "page": "^1.11.4",
+    "redux": "^4.0.1",
     "webpack": "^4.30.0"
   },
   "devDependencies": {
