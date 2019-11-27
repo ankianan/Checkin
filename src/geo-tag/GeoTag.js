@@ -3,6 +3,7 @@ import geolib from 'geolib';
 import XHyperElement from '../common/XHyperElement.js';
 import hyperHTML from 'hyperhtml';
 import page from 'page';
+import * as attachmentHandler from '../storage/attachmentHandler';
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const storage = {
@@ -35,8 +36,8 @@ const formStyle = {
 const inputTextStyle = {
 	flex : "1",
 	padding : "1rem",
-	width : "35%",
-	outline : "none"
+	outline : "none",
+	border: "none"
 }
 
 const inputSubmitStyle = {
@@ -64,7 +65,8 @@ customElements.define('geo-tag', class extends XHyperElement{
 				"long" : 0,
 				"radius" : 1000,
 				"tags" : {
-					"messages" : []
+					"messages" : [],
+					"attachments": []
 				}
 			},
 			"tagged": {
@@ -107,6 +109,18 @@ customElements.define('geo-tag', class extends XHyperElement{
 				})
 			})
 		});
+	}
+	onAttachmentChange(){
+		return async (event)=>{
+			const publicURL = await attachmentHandler.upload(event);
+			this.setState({
+				newFence :Object.assign(this.state.newFence,{
+					tags : Object.assign(this.state.newFence.tags, {
+						attachments : [publicURL]
+					})
+				})
+			});
+		}
 	}
 	async createFence(event){
 		if(this.props.isSignedIn){
@@ -169,7 +183,7 @@ customElements.define('geo-tag', class extends XHyperElement{
 		//Iterate all fences
 		this.fences.forEach((fence)=>{
 			//Display messages of fence, in which user is standing
-			Array.prototype.push.apply(messages, fence.tags.messages)	
+			messages.push(fence.tags)
 		});
 
 		this.setState({
@@ -186,7 +200,7 @@ customElements.define('geo-tag', class extends XHyperElement{
 			//Check if position in this fence
 			if(this.isPositionInFence(position, fence)){
 				//Display messages of fence, in which user is standing
-				Array.prototype.push.apply(messages, fence.tags.messages)
+				messages.push(fence.tags)
 			}	
 		});
 
@@ -219,7 +233,11 @@ customElements.define('geo-tag', class extends XHyperElement{
 				<div style="margin-bottom:1rem;text-align:center">
 					latitude : ${this.state.newFence.lat}, longitude : ${this.state.newFence.long}</div>
 				<form style="${formStyle}" action="javascript:void(0)" name="newFence" onsubmit="${this.createFence.bind(this)}" novalidate="${!this.props.isSignedIn}">
-						<input type="text" style="${inputTextStyle}" name="message" placeholder="Write a message" value="${this.state.newFence.tags.messages[0]}" onchange="${this.onMessageInputChange.bind(this)}" required />
+						<div style="background:white;">
+							<input type="text" style="${inputTextStyle}" name="message" placeholder="Write a message" value="${this.state.newFence.tags.messages[0]}" onchange="${this.onMessageInputChange.bind(this)}" required />
+							<input type="file" onchange="${this.onAttachmentChange()}" accept="image/png, image/jpeg">
+						</div>
+						
 						<input type="submit" style="${inputSubmitStyle}" value="Post" />
 				</form>
 				

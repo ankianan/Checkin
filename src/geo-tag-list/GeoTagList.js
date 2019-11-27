@@ -1,6 +1,9 @@
 import hyperHTML from 'hyperhtml';
 import css from './css/geo-tag-list.css';
 import XHyperElement from '../common/XHyperElement.js';
+import * as blockstack from "blockstack";
+import * as attachmentHandler from '../storage/attachmentHandler';
+
 const html = (...args)=>hyperHTML.wire()(...args);
 
 const defaultProps = {
@@ -23,9 +26,34 @@ customElements.define('geo-tag-list', class extends XHyperElement{
 					:`${('0'+this.props.messages.length).slice(-2)} checkins found`
 				}
 			</h4>
-			${this.props.messages.map((message)=>{
-				return html`<div class="geoTagList__item"><span>${message}</span></div>`;
+			${this.props.messages.map((tag)=>{
+				return html`<div class="geoTagList__item">
+								<h4>${tag.messages[0]}</h4>
+								${tag.attachments && tag.attachments[0]?html`<lazy-image filename="${tag.attachments[0]}"></lazy-image>`:''}
+							</div>`;
 			})}
 		</div>`;
 	}
-})
+});
+
+customElements.define('lazy-image', class extends XHyperElement {
+	constructor(){
+		super({
+			'filename': String
+		})
+
+		this.state = ({
+			src: ''
+		});
+
+		setTimeout(async ()=>{
+			const newSrc = await attachmentHandler.getFile(this.props.filename);
+			this.setState({
+				src: newSrc
+			});
+		});
+	}
+	render() {
+		return this.html`<img src="${this.state.src}">`;
+	}
+});
