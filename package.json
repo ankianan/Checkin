@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack",
-    "verify": "npx karma start"
+    "test": "npx karma start"
   },
   "author": "",
   "license": "ISC",
