@@ -1,5 +1,5 @@
 import * as blockstack from 'blockstack';
-import geolib from 'geolib';
+import * as geolib from 'geolib';
 import XHyperElement from '../common/XHyperElement.js';
 import hyperHTML from 'hyperhtml';
 import page from 'page';
