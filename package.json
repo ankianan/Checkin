@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack"
+    "build": "npx webpack",
+    "test": "npx karma start"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,14 @@
   },
   "devDependencies": {
     "css-loader": "^2.1.1",
+    "istanbul-instrumenter-loader": "^3.0.1",
+    "karma": "^5.0.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage-istanbul-reporter": "^2.1.1",
+    "karma-mocha": "^1.3.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^4.0.2",
+    "mocha": "^7.1.1",
     "node-sass": "^4.12.0",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",

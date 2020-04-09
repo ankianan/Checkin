@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-	entry: './src/index.js',
+	entry: './src/main/index.js',
 	output: {
 		path: path.resolve(__dirname, 'dist'),
 		filename: 'bundle.js'
@@ -17,7 +17,6 @@ module.exports = {
       					loader: 'css-loader', 
       					options: { importLoaders: 1 } 
       				},
-      				'postcss-loader',
       				'sass-loader'
           		]
 			}

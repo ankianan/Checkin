@@ -17,9 +17,9 @@ customElements.define('app-header', class extends XHyperElement{
 			<h1 style="flex : 1;">
 				<a style="text-decoration:none; color: inherit" href="/">Checkin</a>
 			</h1>
-			<div class="${this.props.person?'app-header__mySection':'hide'}">
-				<a class="${!this.props.allCheckins?'selected':''}" href="./nearby">Nearby</a>
-				<a class="${this.props.allCheckins?'selected':''}" href="./all">All</a>
+			<div class="${this.props.person ? 'app-header__mySection' : 'hide'}">
+				<a class="${!this.props.allCheckins ? 'selected' : ''}" href="./nearby">Nearby</a>
+				<a class="${this.props.allCheckins ? 'selected' : ''}" href="./all">All</a>
 				
 				<div class="profile">
 					<span style="margin : 1rem;">${this.props.person.name()}</span>
