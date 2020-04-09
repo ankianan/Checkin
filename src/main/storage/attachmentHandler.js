@@ -40,3 +40,5 @@ export const getFile = async (fileName) => {
     const storage = getStorageDetail(fileName);
     return await blockstack.getFile(storage.fileName, storage.options);
 }
+
+export const square = x=>x*x;
