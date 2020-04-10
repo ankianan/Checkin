@@ -4,16 +4,15 @@
   "description": "myapp",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack",
-    "test": "npx karma start"
+    "test": "npx karma start",
+    "build": "npx webpack"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "blockstack": "^19.0.1",
     "express": "^4.16.4",
-    "geolib": "^2.0.24",
+    "geolib": "^3.2.1",
     "hyperhtml": "^2.25.4",
     "page": "^1.11.4",
     "webpack": "^4.30.0"
