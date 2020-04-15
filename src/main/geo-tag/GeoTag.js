@@ -3,16 +3,10 @@ import * as geolib from 'geolib';
 import XHyperElement from '../common/XHyperElement.js';
 import hyperHTML from 'hyperhtml';
 import page from 'page';
+import {storageDetails} from "../storage/fences/Constants";
+
 import * as attachmentHandler from '../storage/attachmentHandler';
 const html = (...args)=>hyperHTML.wire()(...args);
-
-const storage = {
-	fileName : "/fences.json",
-	options : {
-	  encrypt: false,
-	  decrypt: false
-	}
-};
 
 const tagIconStyle = {
 	padding: "1rem 1rem 0 1rem",
@@ -127,12 +121,11 @@ customElements.define('geo-tag', class extends XHyperElement{
 			let position = await this.getPosition()
 			let clone_newFence = JSON.parse(JSON.stringify(this.state.newFence));
 			this.fences.push(clone_newFence);
-			page('/nearby');
-
 			
-			await blockstack.putFile(storage.fileName, JSON.stringify(this.fences), storage.options).then(() => {
+			await blockstack.putFile(storageDetails.fileName, JSON.stringify(this.fences), storageDetails.options).then(() => {
 				event.target.reset();
 				this.showTagsForPosition(position);
+				page('/nearby');
 			})	
 		}else{
 			document.body.classList.add('notifySignin');
@@ -142,7 +135,7 @@ customElements.define('geo-tag', class extends XHyperElement{
 		}
 	}
 	async getFences(){
-		let fences = await blockstack.getFile(storage.fileName, storage.options) 
+		let fences = await blockstack.getFile(storageDetails.fileName, storageDetails.options)
 		return fences?JSON.parse(fences) : this.fences;
 	}
 	async getPosition(){
@@ -238,7 +231,7 @@ customElements.define('geo-tag', class extends XHyperElement{
 							<input type="file" onchange="${this.onAttachmentChange()}" accept="image/png, image/jpeg">
 						</div>
 						
-						<input type="submit" style="${inputSubmitStyle}" value="Post" />
+						<input name="createFence" type="submit" style="${inputSubmitStyle}" value="Post" />
 				</form>
 				
 			</div>`;

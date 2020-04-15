@@ -138,5 +138,7 @@ customElements.define('blockstack-profile', class extends XHyperElement{
 	}
 });
 
-hyperHTML.bind(document.body)`<blockstack-profile>`;
+window.setup  = (node)=>{
+	hyperHTML.bind(node)`<blockstack-profile>`;
+}
 

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx karma start",
+    "testChrome": "npx karma start  karma.watch.conf.js",
     "build": "npx webpack"
   },
   "author": "",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "css-loader": "^2.1.1",
+    "html-loader": "^1.1.0",
     "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^5.0.0",
     "karma-chrome-launcher": "^3.1.0",
@@ -30,6 +32,7 @@
     "node-sass": "^4.12.0",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
+    "sinon": "^9.0.2",
     "style-loader": "^0.23.1",
     "webpack-cli": "^3.3.0"
   }
