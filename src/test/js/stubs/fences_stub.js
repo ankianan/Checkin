@@ -14,7 +14,7 @@ export const untaggedFence = {
     "loading": true
 };
 
-export const taggedFenceOnlyText = {
+export const textTaggedFence = {
     "newFence": {
         "lat": 0,
         "long": 0,

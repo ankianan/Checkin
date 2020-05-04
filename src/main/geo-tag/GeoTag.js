@@ -6,7 +6,6 @@ import page from 'page';
 import {storageDetails} from "../storage/fences/Constants";
 
 import * as attachmentHandler from '../storage/attachmentHandler';
-const html = (...args)=>hyperHTML.wire()(...args);
 
 const tagIconStyle = {
 	padding: "1rem 1rem 0 1rem",
@@ -72,7 +71,7 @@ customElements.define('geo-tag', class extends XHyperElement{
 	}
 	async connectedCallback(){
 		this.render();
-		const positionPromise = await this.getPosition();
+		const positionPromise = this.getPosition();
 		if(this.props.isSignedIn){
 			this.loadGeoTags(positionPromise);
 		}
@@ -122,7 +121,7 @@ customElements.define('geo-tag', class extends XHyperElement{
 			let clone_newFence = JSON.parse(JSON.stringify(this.state.newFence));
 			this.fences.push(clone_newFence);
 			
-			await blockstack.putFile(storageDetails.fileName, JSON.stringify(this.fences), storageDetails.options).then(() => {
+			await blockstack.putFile(storageDetails.fileName, JSON.stringify(this.fences), storageDetails.options, ).then(() => {
 				event.target.reset();
 				this.showTagsForPosition(position);
 				page('/nearby');
@@ -139,24 +138,16 @@ customElements.define('geo-tag', class extends XHyperElement{
 		return fences?JSON.parse(fences) : this.fences;
 	}
 	async getPosition(){
-		return new Promise((resolve, reject)=>{
-			if ("geolocation" in navigator) {
-				navigator.geolocation.getCurrentPosition((position)=> {
-					let _position = {
-						"lat" : position.coords.latitude, 
-						"long" : position.coords.longitude
-					};
-					this.setState({
-						newFence : Object.assign(this.state.newFence, _position)
-					});
+		const position = await new Promise(resolve=>navigator.geolocation.getCurrentPosition(resolve));
+		let _position = {
+			"lat" : position.coords.latitude, 
+			"long" : position.coords.longitude
+		};
+		this.setState({
+			newFence : Object.assign(this.state.newFence, _position)
+		});
 
-					resolve(_position);
-				});
-			} else {
-			  /* geolocation IS NOT available */
-			  reject();
-			}
-		})
+		return _position;
 		
 	}
 	/**
