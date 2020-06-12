@@ -1,19 +1,22 @@
 import * as TestUtil from "../../util/TestUtil";
-import * as fences_stub from "../../stubs/fences_stub";
+import * as fences_stub from "../../stubs/create_fence_stub";
+import * as fences from "../../data/fencesAtPosition";
 import * as blockstack from 'blockstack';
 import {storageDetails} from '../../../../main/storage/fences/Constants';
 import {render} from '../../templates/geoTag.tmpl.js';
 import sinon from 'sinon';
+import {getWorkArea} from "../../util/TestUtil";
 
 var assert = require('assert');
 describe('Geo Tag Spec', function() {
     let node = null,
         state = null,
-        putFileSpy = sinon.spy();
+        putFileSpy = sinon.spy(),
+        workArea = null;
 
     beforeEach(()=>{
-        const workArea = TestUtil.getWorkArea();
-        render(workArea);
+        workArea = TestUtil.getWorkArea();
+        render(workArea)({isSignedIn: false});
         node = workArea.firstElementChild;
         state = node.state;
 
@@ -38,7 +41,17 @@ describe('Geo Tag Spec', function() {
         assert.deepEqual(state, fences_stub.untaggedFence);
     });
 
+    it('Should show nearby checking id props.allCheckins is false', ()=> {
+        const showTagsForLastPositionsSpy = sinon.spy(node, 'showTagsForLastPositions');
+        assert.equal(showTagsForLastPositionsSpy.called, false);
+
+        render(workArea)({allCheckins: false});
+
+        assert.equal(showTagsForLastPositionsSpy.called, true);
+    })
+
     it('should allow creating tagged fences', async ()=> {
+        render(workArea)({isSignedIn: true});
         node.setState(fences_stub.textTaggedFence);
         document.forms.newFence.elements.createFence.click();
         await new Promise(resolve=>setTimeout(resolve,1000));
@@ -46,10 +59,12 @@ describe('Geo Tag Spec', function() {
     });
 
     it('should not allow creating tagged fences if not logged in', async ()=> {
-        node.isSignedIn = false;
+        render(workArea)({isSignedIn: false});
         node.setState(fences_stub.textTaggedFence);
         document.forms.newFence.elements.createFence.click();
         await new Promise(resolve=>setTimeout(resolve,1000));
         assert.equal(false, putFileSpy.called);
     });
 });
+
+

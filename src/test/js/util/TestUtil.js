@@ -11,4 +11,20 @@ export const getWorkArea = () => {
 
 export const unload = () => {
     workArea.parentNode.removeChild(workArea);
+};
+
+const loop = (testCallback, count = 0)=>(resolve, reject)=>{
+    try{
+        if(count<5){
+            testCallback();
+            resolve();
+        }
+    }catch (e) {
+        if(count ==5){
+            reject();
+        }
+        setTimeout(()=>loop(testCallback, count + 1)(resolve, reject), 250);
+    }
 }
+
+export const eventually = (testCallback) => new Promise((resolve, reject)=>loop(testCallback)(resolve,reject))

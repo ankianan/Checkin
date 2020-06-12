@@ -79,10 +79,9 @@ customElements.define('geo-tag', class extends XHyperElement{
 	loadGeoTags(positionPromise){
 		Promise.all([this.getFences(), positionPromise]).then((values)=>{
 			this.fences = values[0];
-			const position = values[1];
 			this.setState({
 				loading : false
-			})
+			});
 			this.showTags();
 		});
 	}
