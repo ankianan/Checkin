@@ -1,0 +1,6 @@
+lazy-image {
+    display: inline-block;
+    img {
+        width: 100%;
+    }
+}
