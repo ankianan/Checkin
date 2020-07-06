@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npx karma start",
     "test:watch": "npx karma start  karma.watch.conf.js",
-    "start:watch": "npx webpack"
+    "start:watch": "npx webpack --config webpack.watch.config.js",
+    "start:build": "npx webpack"
   },
   "author": "",
   "license": "ISC",
