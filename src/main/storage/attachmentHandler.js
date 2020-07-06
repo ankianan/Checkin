@@ -8,7 +8,12 @@ const getStorageDetail = (fileName)=>({
     }
 });
 
-// Ref: https://stackoverflow.com/questions/10683192/how-to-get-the-filename-from-input-type-file-html-element-using-javascript-or-jq/39968450
+
+/**
+ * https://stackoverflow.com/questions/10683192/how-to-get-the-filename-from-input-type-file-html-element-using-javascript-or-jq/39968450
+ * @param event
+ * @returns {T}
+ */
 const getFileName = (event)=>{
     return event.target.value.split('/').pop().split('\\').pop();
 }

@@ -31,6 +31,12 @@ module.exports = (config) => {
         coverageIstanbulReporter: {
             reports: [ 'text-summary', 'html' ],
             fixWebpackSourcePaths: true
+        },
+        client: {
+            mocha: {
+                // change Karma's debug.html to the mocha web reporter
+                reporter: 'html'
+            }
         }
     });
 };

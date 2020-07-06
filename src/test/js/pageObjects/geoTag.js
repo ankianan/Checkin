@@ -1,0 +1,1 @@
+export const createFence = ()=>document.forms["newFence"].elements.createFence.click();
