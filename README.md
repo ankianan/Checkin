@@ -35,6 +35,7 @@ npm install
 
 ## Build
 
+1. npm run start:build: Start webpack, build and exit
 1. npm run start:watch : Start webpack in watch mode
 1. node server.js : Start server at [http://localhost:8081](http://localhost:8081)
 
