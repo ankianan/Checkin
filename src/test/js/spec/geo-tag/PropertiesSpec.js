@@ -29,7 +29,16 @@ describe('Geo Tag Spec', function() {
         TestUtil.unload();
     });
 
-    it('should be able to load all fences', async ()=>{
+    it('should be handle no fences', async ()=>{
+        sinon.replace(blockstack, 'getFile', async ()=>null);
+        render(workArea)();
+        let node = workArea.firstElementChild;
+        await  TestUtil.eventually(()=>{
+            assert.equal(node.state.tagged.messages.length, 0);
+        });
+    });
+
+    it('should be able to load All fences', async ()=>{
         sinon.replace(blockstack, 'getFile', async ()=>JSON.stringify(getFences()));
         render(workArea)();
         let node = workArea.firstElementChild;
@@ -38,7 +47,7 @@ describe('Geo Tag Spec', function() {
         });
     });
 
-    it('should be able to load nearby fences', async ()=>{
+    it('should be able to load Nearby fences', async ()=>{
         sinon.replace(blockstack, 'getFile', async ()=>JSON.stringify(fences));
         render(workArea)({
             allCheckins: false

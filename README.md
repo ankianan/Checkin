@@ -35,8 +35,11 @@ npm install
 
 ## Build
 
-npm run build
+1. npm run start:watch : Start webpack in watch mode
+1. node server.js : Start server at [http://localhost:8081](http://localhost:8081)
 
-## Run file server
+## Test
+npm run test : Single test run
 
-node server.js //localhost:8081
+npm run test:watch : Watched test run
+

@@ -1,17 +1,16 @@
 import * as TestUtil from "../../util/TestUtil";
 import * as fences_stub from "../../stubs/create_fence_stub";
-import * as fences from "../../data/fencesAtPosition";
 import * as blockstack from 'blockstack';
-import {storageDetails} from '../../../../main/storage/fences/Constants';
 import {render} from '../../templates/geoTag.tmpl.js';
 import sinon from 'sinon';
-import {getWorkArea} from "../../util/TestUtil";
+import * as PO from '../../pageObjects/geoTag';
+import AvatarBlob from "../../data/blob/AvatarBlob";
 
 var assert = require('assert');
 describe('Geo Tag Spec', function() {
     let node = null,
         state = null,
-        putFileSpy = sinon.spy(),
+        putFileSpy = null,
         workArea = null;
 
     beforeEach(()=>{
@@ -50,21 +49,41 @@ describe('Geo Tag Spec', function() {
         assert.equal(showTagsForLastPositionsSpy.called, true);
     })
 
+    it('should not allow creating tagged fences if not logged in', async ()=> {
+        render(workArea)({isSignedIn: false});
+        node.onMessageInputChange()({
+            target: {
+                value : "Hello"
+            }
+        });
+        PO.createFence();
+        await new Promise(resolve=>setTimeout(resolve,1000));
+        assert.equal(false, putFileSpy.called);
+    });
+
     it('should allow creating tagged fences', async ()=> {
         render(workArea)({isSignedIn: true});
-        node.setState(fences_stub.textTaggedFence);
-        document.forms.newFence.elements.createFence.click();
+        node.onMessageInputChange()({
+            target: {
+                value : "Hello"
+            }
+        });
+        PO.createFence();
         await new Promise(resolve=>setTimeout(resolve,1000));
         assert.equal(true, putFileSpy.called);
     });
 
-    it('should not allow creating tagged fences if not logged in', async ()=> {
-        render(workArea)({isSignedIn: false});
-        node.setState(fences_stub.textTaggedFence);
-        document.forms.newFence.elements.createFence.click();
-        await new Promise(resolve=>setTimeout(resolve,1000));
-        assert.equal(false, putFileSpy.called);
-    });
+    it('should allow attachment in tags', async ()=>{
+        render(workArea)({isSignedIn: true});
+        await node.onAttachmentChange()({
+            target: {
+                value: 'avatar.png',
+                files: [ AvatarBlob]
+            }
+        })
+
+        assert.equal(true, putFileSpy.called);
+    })
 });
 
 

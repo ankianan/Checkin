@@ -1,1 +1,1 @@
-export const getTextInput = (node)=>node.querySelectorAll(['input[type="text"]'])
+export const createFence = ()=>document.forms["newFence"].elements.createFence.click();
