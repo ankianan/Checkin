@@ -1,6 +1,6 @@
 {
   "name": "My App",
-  "start_url": "./index.html",
+  "start_url": "https://ankit90anand.github.io/Checkin/index.html",
   "description": "A simple demo of Blockstack Auth",
   "icons": [{
     "src": "https://helloblockstack.com/icon-192x192.png",
