@@ -30,7 +30,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "mocha": "^7.1.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
     "sinon": "^9.0.2",
